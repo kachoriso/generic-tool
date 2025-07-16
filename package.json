@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "start": "npx serve -s dist -p ${PORT:-3000}",
     "lint": "eslint .",
     "preview": "vite preview"
   },
