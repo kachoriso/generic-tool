@@ -1,4 +1,4 @@
-import type { TodoItem, TodoGroup, AppState } from '../types';
+import type { TodoGroup, AppState } from '../types';
 
 const STORAGE_KEY = 'todo-app-data';
 

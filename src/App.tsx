@@ -1,30 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import {
-  ThemeProvider,
-  CssBaseline,
-  Container,
-  Paper,
-  Typography,
-  Box,
-  Tabs,
-  Tab,
-  AppBar,
-  Toolbar,
-} from '@mui/material';
-import type { TodoItem, TodoGroup } from './types';
-import { 
-  loadAppState, 
-  saveAppState, 
-  generateId 
-} from './utils/storage';
-import { TodoInput } from './components/TodoInput';
-import { TodoItem as TodoItemComponent } from './components/TodoItem';
-import { GroupSelector } from './components/GroupSelector';
-import { Navigation } from './components/Navigation';
+import { ThemeProvider, CssBaseline, AppBar, Toolbar, Typography, Container, Tabs, Tab, Box, Paper } from '@mui/material';
 import { theme } from './theme';
+import { TodoInput } from './components/TodoInput';
+import { TodoItem } from './components/TodoItem';
+import { GroupSelector } from './components/GroupSelector';
+import type { TodoItem as TodoItemType, TodoGroup } from './types';
+import { loadAppState, saveAppState, generateId } from './utils/storage';
 
 function App() {
-  const [todos, setTodos] = useState<TodoItem[]>([]);
+  const [todos, setTodos] = useState<TodoItemType[]>([]);
   const [groups, setGroups] = useState<TodoGroup[]>([]);
   const [selectedGroupId, setSelectedGroupId] = useState<string>('general');
 
@@ -35,7 +19,7 @@ function App() {
     setSelectedGroupId(appState.selectedGroupId || 'general');
   }, []);
 
-  const saveState = (newTodos: TodoItem[], newGroups: TodoGroup[], newSelectedGroupId: string) => {
+  const saveState = (newTodos: TodoItemType[], newGroups: TodoGroup[], newSelectedGroupId: string) => {
     const appState = {
       todos: newTodos,
       groups: newGroups,
@@ -45,7 +29,7 @@ function App() {
   };
 
   const addTodo = (text: string, dueDate?: Date) => {
-    const newTodo: TodoItem = {
+    const newTodo: TodoItemType = {
       id: generateId(),
       text,
       completed: false,
@@ -197,7 +181,7 @@ function App() {
                       </Typography>
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                         {incompleteTodos.map(todo => (
-                          <TodoItemComponent
+                          <TodoItem
                             key={todo.id}
                             todo={todo}
                             onToggle={toggleTodo}
@@ -215,7 +199,7 @@ function App() {
                       </Typography>
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                         {completedTodos.map(todo => (
-                          <TodoItemComponent
+                          <TodoItem
                             key={todo.id}
                             todo={todo}
                             onToggle={toggleTodo}

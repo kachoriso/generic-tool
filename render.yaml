@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: generic-tool
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npx serve -s dist
+    plan: free 
