@@ -1,16 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { ThemeProvider, CssBaseline, AppBar, Toolbar, Typography, Container, Tabs, Tab, Box, Paper } from '@mui/material';
+import { 
+  ThemeProvider, 
+  CssBaseline, 
+  AppBar, 
+  Toolbar, 
+  Typography, 
+  Container, 
+  Tabs, 
+  Tab, 
+  Box, 
+  Paper,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+  Popover
+} from '@mui/material';
+import { 
+  Menu as MenuIcon,
+  CheckBox as TodoIcon,
+  Calculate as CalculatorIcon,
+  Settings as SettingsIcon
+} from '@mui/icons-material';
 import { theme } from './theme';
 import { TodoInput } from './components/TodoInput';
 import { TodoItem } from './components/TodoItem';
 import { GroupSelector } from './components/GroupSelector';
+import { PriceCalculator } from './components/PriceCalculator';
 import type { TodoItem as TodoItemType, TodoGroup } from './types';
 import { loadAppState, saveAppState, generateId } from './utils/storage';
+
+type Page = 'todo' | 'calculator';
 
 function App() {
   const [todos, setTodos] = useState<TodoItemType[]>([]);
   const [groups, setGroups] = useState<TodoGroup[]>([]);
   const [selectedGroupId, setSelectedGroupId] = useState<string>('general');
+  const [currentPage, setCurrentPage] = useState<Page>('todo');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [settingsAnchorEl, setSettingsAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const appState = loadAppState();
@@ -68,164 +100,209 @@ function App() {
     saveState(todos, updatedGroups, selectedGroupId);
   };
 
-  const deleteGroup = (groupId: string) => {
-    if (groupId === 'general') return;
+  const deleteGroup = (id: string) => {
+    if (id === 'general') return;
     
-    const updatedGroups = groups.filter(group => group.id !== groupId);
-    setGroups(updatedGroups);
-    
+    const updatedGroups = groups.filter(group => group.id !== id);
     const updatedTodos = todos.map(todo =>
-      todo.groupId === groupId ? { ...todo, groupId: 'general' } : todo
+      todo.groupId === id ? { ...todo, groupId: 'general' } : todo
     );
+    
+    const newSelectedGroupId = selectedGroupId === id ? 'general' : selectedGroupId;
+    
+    setGroups(updatedGroups);
     setTodos(updatedTodos);
-    
-    const newSelectedGroupId = selectedGroupId === groupId ? 'general' : selectedGroupId;
     setSelectedGroupId(newSelectedGroupId);
-    
     saveState(updatedTodos, updatedGroups, newSelectedGroupId);
   };
 
-  const selectGroup = (groupId: string) => {
-    setSelectedGroupId(groupId);
-    saveState(todos, groups, groupId);
+  const currentGroupTodos = todos.filter(todo => todo.groupId === selectedGroupId);
+  const allGroups = [
+    { id: 'general', name: 'General', color: '#2196f3', createdAt: new Date() },
+    ...groups
+  ];
+
+  const handlePageChange = (page: Page) => {
+    setCurrentPage(page);
+    setDrawerOpen(false);
   };
 
-  const selectedGroup = groups.find(group => group.id === selectedGroupId);
-  const filteredTodos = todos.filter(todo => todo.groupId === selectedGroupId);
-  const incompleteTodos = filteredTodos.filter(todo => !todo.completed);
-  const completedTodos = filteredTodos.filter(todo => todo.completed);
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
-    selectGroup(newValue);
+  const handleSettingsClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setSettingsAnchorEl(event.currentTarget);
   };
+
+  const handleSettingsClose = () => {
+    setSettingsAnchorEl(null);
+  };
+
+  const settingsOpen = Boolean(settingsAnchorEl);
+
+  const menuItems = [
+    { id: 'todo' as Page, label: 'TODOリスト', icon: <TodoIcon /> },
+    { id: 'calculator' as Page, label: '容量あたりの値段計算機', icon: <CalculatorIcon /> }
+  ];
+
+  const drawer = (
+    <Box sx={{ width: 280 }} role="presentation">
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h6" color="primary" sx={{ fontWeight: 600 }}>
+          generic tool
+        </Typography>
+      </Box>
+      <Divider />
+      <List>
+        {menuItems.map((item) => (
+          <ListItem key={item.id} disablePadding>
+            <ListItemButton 
+              selected={currentPage === item.id}
+              onClick={() => handlePageChange(item.id)}
+            >
+              <ListItemIcon>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText primary={item.label} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
-        {/* Fixed Header */}
-        <AppBar 
-          position="fixed" 
-          elevation={1}
-          sx={{ 
-            bgcolor: 'rgba(239, 246, 255, 0.9)',
-            backdropFilter: 'blur(8px)',
-            borderBottom: '1px solid rgba(59, 130, 246, 0.1)'
-          }}
-        >
-          <Toolbar>
-            <Typography variant="h1" component="h1" sx={{ color: 'text.primary' }}>
-              generic tool
-            </Typography>
-          </Toolbar>
-        </AppBar>
+      
+      <AppBar position="static" elevation={0} sx={{ backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="primary"
+            aria-label="menu"
+            onClick={() => setDrawerOpen(true)}
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'primary.main', fontWeight: 600 }}>
+            generic tool
+          </Typography>
+        </Toolbar>
+      </AppBar>
 
-        {/* Group Management Section */}
-        <Box sx={{ pt: 8, pb: 2 }}>
-          <Container maxWidth="lg">
-            <GroupSelector
-              groups={groups}
-              selectedGroupId={selectedGroupId}
-              onSelectGroup={selectGroup}
-              onCreateGroup={addGroup}
-              onDeleteGroup={deleteGroup}
-            />
-          </Container>
-        </Box>
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      >
+        {drawer}
+      </Drawer>
 
-        <Container maxWidth="lg" sx={{ pb: 4 }}>
-          <Paper elevation={2} sx={{ overflow: 'hidden' }}>
-            {/* Group Tabs */}
-            <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'grey.50' }}>
+      {currentPage === 'todo' && (
+        <Container maxWidth="md" sx={{ pb: 4, pt: 3 }}>
+          <Paper elevation={0} sx={{ p: 4, backgroundColor: '#f8f9fa', border: '1px solid #e0e0e0' }}>
+            {/* 歯車アイコンを右上に配置 */}
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+              <IconButton
+                onClick={handleSettingsClick}
+                sx={{ 
+                  color: '#666',
+                  '&:hover': {
+                    backgroundColor: '#f0f0f0'
+                  }
+                }}
+              >
+                <SettingsIcon />
+              </IconButton>
+            </Box>
+
+            {/* タブを中央配置 */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
               <Tabs
                 value={selectedGroupId}
-                onChange={handleTabChange}
+                onChange={(_, newValue) => setSelectedGroupId(newValue)}
                 variant="scrollable"
                 scrollButtons="auto"
-                sx={{ minHeight: 56 }}
+                sx={{
+                  '& .MuiTab-root': {
+                    color: '#666',
+                    '&.Mui-selected': {
+                      color: 'primary.main',
+                    },
+                  },
+                }}
               >
-                {groups.map((group) => (
+                {allGroups.map((group) => (
                   <Tab
                     key={group.id}
+                    label={group.name}
                     value={group.id}
-                    label={
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Box
-                          sx={{
-                            width: 12,
-                            height: 12,
-                            borderRadius: '50%',
-                            bgcolor: group.color,
-                          }}
-                        />
-                        <Typography variant="body2" fontWeight={500}>
-                          {group.name}
-                        </Typography>
-                      </Box>
-                    }
+                    sx={{
+                      borderBottom: `3px solid ${group.color}`,
+                      '&.Mui-selected': {
+                        borderBottom: `3px solid ${group.color}`,
+                      },
+                    }}
                   />
                 ))}
               </Tabs>
             </Box>
 
-            {/* Content */}
-            <Box sx={{ p: 3 }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                <TodoInput onAdd={addTodo} placeholder={`${selectedGroup?.name || 'TODO'}を追加...`} />
-
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  {incompleteTodos.length > 0 && (
-                    <Box>
-                      <Typography variant="h3" gutterBottom>
-                        未完了のタスク ({incompleteTodos.length})
-                      </Typography>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                        {incompleteTodos.map(todo => (
-                          <TodoItem
-                            key={todo.id}
-                            todo={todo}
-                            onToggle={toggleTodo}
-                            onDelete={deleteTodo}
-                          />
-                        ))}
-                      </Box>
-                    </Box>
-                  )}
-
-                  {completedTodos.length > 0 && (
-                    <Box>
-                      <Typography variant="h3" gutterBottom>
-                        完了済み ({completedTodos.length})
-                      </Typography>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                        {completedTodos.map(todo => (
-                          <TodoItem
-                            key={todo.id}
-                            todo={todo}
-                            onToggle={toggleTodo}
-                            onDelete={deleteTodo}
-                          />
-                        ))}
-                      </Box>
-                    </Box>
-                  )}
-
-                  {filteredTodos.length === 0 && (
-                    <Box sx={{ textAlign: 'center', py: 6 }}>
-                      <Typography variant="h3" color="text.secondary" gutterBottom>
-                        {selectedGroup?.name}グループにタスクはありません
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        上のフォームから新しいタスクを追加してください
-                      </Typography>
-                    </Box>
-                  )}
-                </Box>
+            <Popover
+              open={settingsOpen}
+              anchorEl={settingsAnchorEl}
+              onClose={handleSettingsClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <Box sx={{ 
+                p: { xs: 1, sm: 2 }, 
+                minWidth: { xs: 320, sm: 400 },
+                maxWidth: { xs: '90vw', sm: 500 },
+                maxHeight: { xs: '80vh', sm: 600 },
+                overflow: 'auto'
+              }}>
+                <GroupSelector
+                  groups={allGroups}
+                  selectedGroupId={selectedGroupId}
+                  onSelectGroup={setSelectedGroupId}
+                  onCreateGroup={addGroup}
+                  onDeleteGroup={deleteGroup}
+                />
               </Box>
+            </Popover>
+
+            <TodoInput onAdd={addTodo} />
+
+            <Box sx={{ mt: 3 }}>
+              {currentGroupTodos.map(todo => (
+                <TodoItem
+                  key={todo.id}
+                  todo={todo}
+                  onToggle={toggleTodo}
+                  onDelete={deleteTodo}
+                />
+              ))}
+              {currentGroupTodos.length === 0 && (
+                <Box sx={{ textAlign: 'center', py: 4 }}>
+                  <Typography variant="body1" color="text.secondary">
+                    まだTODOがありません。上記から新しいTODOを追加してください。
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </Paper>
         </Container>
-      </Box>
+      )}
+
+      {currentPage === 'calculator' && (
+        <PriceCalculator />
+      )}
     </ThemeProvider>
   );
 }
