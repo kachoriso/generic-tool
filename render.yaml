@@ -2,6 +2,10 @@ services:
   - type: web
     name: generic-tool
     env: node
-    buildCommand: npm install && npm run build
-    startCommand: npx serve -s dist
-    plan: free 
+    runtime: node
+    buildCommand: ./build.sh
+    startCommand: npx serve -s dist -p $PORT
+    plan: free
+    envVars:
+      - key: NODE_VERSION
+        value: "22" 
