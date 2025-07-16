@@ -4,6 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "main": "dist/index.html",
+  "homepage": "https://generic-tool.onrender.com",
+  "author": "kato",
+  "license": "MIT",
   "keywords": ["react", "typescript", "vite", "todo", "web-app"],
   "repository": {
     "type": "git",
@@ -15,7 +18,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node build.js",
+    "heroku-postbuild": "npm run build",
     "postbuild": "ls -la dist/ && echo 'Build artifacts ready'",
     "start": "sirv dist --single --port $PORT --host 0.0.0.0",
     "lint": "eslint .",
