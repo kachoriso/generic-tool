@@ -11,16 +11,17 @@ let pool: Pool | null = null;
  */
 function getPool(): Pool {
   if (!pool) {
+    // SSL設定の改善 - Neon対応
+    const sslConfig = { rejectUnauthorized: false };
+    
     pool = new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false
-      },
+      ssl: sslConfig,
       // 接続プール設定
       max: 20,          // 最大接続数
       min: 5,           // 最小接続数
       idleTimeoutMillis: 30000,  // アイドルタイムアウト（30秒）
-      connectionTimeoutMillis: 10000, // 接続タイムアウト（10秒）
+      connectionTimeoutMillis: 15000, // 接続タイムアウト（15秒）
     });
 
     // エラーハンドリング

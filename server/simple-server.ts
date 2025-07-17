@@ -198,14 +198,38 @@ app.get('/api/parties/:id', async (req, res) => {
 // パーティ作成
 app.post('/api/parties', async (req, res) => {
   try {
-    const partyData = req.body;
-    console.log('🎮 パーティ作成リクエスト受信:', JSON.stringify(partyData, null, 2));
+    const formData = req.body;
+    console.log('🎮 パーティ作成リクエスト受信:', JSON.stringify(formData, null, 2));
     
-    // 基本的なバリデーション
-    if (!partyData.league) {
-      return res.status(400).json({
+    // フォームデータをデータベース形式に変換
+    console.log('📁 partyDataAdapterのインポートを試行中...');
+    let partyData: any;
+    try {
+      const adapterModule = await import('../src/utils/partyDataAdapter.js');
+      console.log('✅ アダプターモジュール取得成功:', Object.keys(adapterModule));
+      const { convertFormToDbInput, validatePartyInput } = adapterModule;
+      
+      // バリデーション
+      console.log('🔍 バリデーション実行中...');
+      const validationErrors = validatePartyInput(formData);
+      console.log('📋 バリデーション結果:', validationErrors);
+      if (validationErrors.length > 0) {
+        return res.status(400).json({
+          success: false,
+          error: validationErrors.join(', '),
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      // フォームデータをDB形式に変換
+      console.log('🔄 convertFormToDbInput実行中...');
+      partyData = convertFormToDbInput(formData);
+      console.log('🎯 変換後のパーティデータ:', JSON.stringify(partyData, null, 2));
+    } catch (importError) {
+      console.error('❌ アダプターインポートエラー:', importError);
+      return res.status(500).json({
         success: false,
-        error: 'リーグの指定は必須です',
+        error: 'データ変換モジュールの読み込みに失敗しました',
         timestamp: new Date().toISOString()
       });
     }
@@ -254,13 +278,39 @@ app.post('/api/parties', async (req, res) => {
 app.put('/api/parties/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const partyData = req.body;
+    const formData = req.body;
     
     // UUIDの検証
     if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) {
       return res.status(400).json({
         success: false,
         error: '無効なパーティIDです',
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // フォームデータをデータベース形式に変換
+    let partyData: any;
+    try {
+      const { convertFormToDbInput, validatePartyInput } = await import('../src/utils/partyDataAdapter.js');
+      
+      // バリデーション
+      const validationErrors = validatePartyInput(formData);
+      if (validationErrors.length > 0) {
+        return res.status(400).json({
+          success: false,
+          error: validationErrors.join(', '),
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      // フォームデータをDB形式に変換
+      partyData = convertFormToDbInput(formData);
+    } catch (importError) {
+      console.error('❌ アダプター更新インポートエラー:', importError);
+      return res.status(500).json({
+        success: false,
+        error: 'データ変換モジュールの読み込みに失敗しました',
         timestamp: new Date().toISOString()
       });
     }
