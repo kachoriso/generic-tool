@@ -6,9 +6,12 @@ import { existsSync } from 'fs';
 console.log('🚀 Starting build process...');
 
 try {
-  // Viteビルドを実行
+  // Viteビルドを実行（フロントエンド）
   console.log('📦 Running Vite build...');
   execSync('npx vite build', { stdio: 'inherit' });
+  
+  // バックエンドは本番でもTSXで実行するため、ビルド不要
+  console.log('✅ Backend will run with tsx in production');
   
   // distフォルダの確認
   if (existsSync('dist')) {
