@@ -1,44 +1,123 @@
-import React from 'react';
-import { CheckSquare, Calendar, BarChart, Settings } from 'lucide-react';
+import React, { useState } from 'react';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Box,
+  Divider,
+} from '@mui/material';
+import {
+  Menu as MenuIcon,
+  Home as HomeIcon,
+  Assignment as TodoIcon,
+  SportsEsports as PvpIcon,
+  Calculate as CalcIcon,
+  List as ListIcon,
+  Add as AddIcon,
+} from '@mui/icons-material';
 
 interface NavigationProps {
-  currentTool: string;
-  onToolChange: (tool: string) => void;
+  currentPath?: string;
 }
 
-export const Navigation: React.FC<NavigationProps> = ({ currentTool, onToolChange }) => {
-  const tools = [
-    { id: 'todo', label: 'TODO', icon: CheckSquare },
-    { id: 'calendar', label: 'カレンダー', icon: Calendar },
-    { id: 'analytics', label: '統計', icon: BarChart },
-    { id: 'settings', label: '設定', icon: Settings },
+export const Navigation: React.FC<NavigationProps> = ({ currentPath = '/' }) => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleNavigation = (path: string) => {
+    window.location.href = path;
+    setDrawerOpen(false);
+  };
+
+  const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
+  const menuItems = [
+    { label: 'ホーム', path: '/', icon: <HomeIcon /> },
+    { divider: true },
+    { label: 'TODOリスト', path: '/todos', icon: <TodoIcon /> },
+    { divider: true },
+    { label: 'パーティ一覧', path: '/parties', icon: <ListIcon /> },
+    { label: '新規パーティ作成', path: '/parties/new', icon: <AddIcon /> },
+    { divider: true },
+    { label: '価格計算機', path: '/calculator', icon: <CalcIcon /> },
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-blue-100/80 backdrop-blur-sm border-b border-blue-200">
-      <div className="max-w-4xl mx-auto px-6">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center space-x-8">
-            {tools.map((tool) => {
-              const IconComponent = tool.icon;
+    <>
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={toggleDrawer}
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Generic Tools
+          </Typography>
+        </Toolbar>
+      </AppBar>
+
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: 280,
+            boxSizing: 'border-box',
+          },
+        }}
+      >
+        <Toolbar /> {/* ツールバーの高さ分のスペース */}
+        
+        <Box sx={{ overflow: 'auto' }}>
+          <List>
+            {menuItems.map((item, index) => {
+              if (item.divider) {
+                return <Divider key={`divider-${index}`} />;
+              }
+              
+              const isActive = currentPath === item.path;
+              
               return (
-                <button
-                  key={tool.id}
-                  onClick={() => onToolChange(tool.id)}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors text-sm font-medium ${
-                    currentTool === tool.id
-                      ? 'bg-blue-500 text-white shadow-sm'
-                      : 'text-gray-600 hover:text-gray-800 hover:bg-blue-200/50'
-                  }`}
+                <ListItem
+                  key={item.path}
+                  onClick={() => handleNavigation(item.path!)}
+                  sx={{
+                    cursor: 'pointer',
+                    backgroundColor: isActive ? 'action.selected' : 'transparent',
+                    '&:hover': {
+                      backgroundColor: 'action.hover',
+                    },
+                  }}
                 >
-                  <IconComponent className="w-4 h-4" />
-                  <span>{tool.label}</span>
-                </button>
+                  <ListItemIcon sx={{ color: isActive ? 'primary.main' : 'inherit' }}>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary={item.label} 
+                    sx={{ 
+                      color: isActive ? 'primary.main' : 'inherit',
+                      fontWeight: isActive ? 'bold' : 'normal',
+                    }} 
+                  />
+                </ListItem>
               );
             })}
-          </div>
-        </div>
-      </div>
-    </nav>
+          </List>
+        </Box>
+      </Drawer>
+    </>
   );
 }; 

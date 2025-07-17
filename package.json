@@ -7,7 +7,13 @@
   "homepage": "https://generic-tool.onrender.com",
   "author": "kato",
   "license": "MIT",
-  "keywords": ["react", "typescript", "vite", "todo", "web-app"],
+  "keywords": [
+    "react",
+    "typescript",
+    "vite",
+    "todo",
+    "web-app"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/kachoriso/generic-tool.git"
@@ -22,6 +28,10 @@
     "heroku-postbuild": "npm run build",
     "postbuild": "ls -la dist/ && echo 'Build artifacts ready'",
     "start": "sirv dist --single --port $PORT --host 0.0.0.0",
+    "server": "tsx server/server.ts",
+    "simple-server": "tsx server/simple-server.ts",
+    "dev:server": "tsx watch server/server.ts",
+    "init-db": "tsx scripts/init-db.ts",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -30,15 +40,26 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.14",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "pg": "^8.16.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "sirv-cli": "^3.0.1"
+    "react-image-crop": "^11.0.10",
+    "react-router-dom": "^7.7.0",
+    "sirv-cli": "^3.0.1",
+    "tsx": "^4.20.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
     "@tailwindcss/postcss": "^4.1.11",
+    "@types/pg": "^8.15.4",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "@types/react-image-crop": "^8.1.6",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.6.0",
     "autoprefixer": "^10.4.21",
