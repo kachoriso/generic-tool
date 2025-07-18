@@ -9,13 +9,15 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: false,
     rollupOptions: {
+      external: [],  // Empty external to ensure all dependencies are bundled
       output: {
         manualChunks: undefined
       }
     }
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom']
+    include: ['react', 'react-dom', 'react-router-dom'],
+    force: true  // Force re-optimization
   },
   resolve: {
     dedupe: ['react', 'react-dom']
