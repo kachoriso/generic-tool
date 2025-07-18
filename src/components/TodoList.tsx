@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box, Paper } from '@mui/material';
+import { Assignment } from '@mui/icons-material';
 import { TodoInput } from './TodoInput';
 import { TodoItem } from './TodoItem';
 import type { TodoItem as TodoItemType } from '../types';
@@ -50,9 +51,17 @@ export default function TodoList() {
 
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom align="center">
-        TODOリスト
-      </Typography>
+      {/* ページタイトル */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, justifyContent: 'center' }}>
+        <Assignment sx={{ fontSize: { xs: 32, sm: 40 }, color: 'primary.main' }} />
+        <Typography 
+          variant="h5"
+          component="h1" 
+          sx={{ fontWeight: 600, color: 'primary.main', textAlign: 'center' }}
+        >
+          TODOリスト
+        </Typography>
+      </Box>
       
       <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
         <TodoInput onAdd={addTodo} />

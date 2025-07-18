@@ -44,7 +44,7 @@ export const Navigation: React.FC<NavigationProps> = ({ currentPath = '/' }) => 
     { label: 'TODOリスト', path: '/todos', icon: <TodoIcon /> },
     { divider: true },
     { label: 'パーティ一覧', path: '/parties', icon: <ListIcon /> },
-    { label: '新規パーティ作成', path: '/parties/new', icon: <AddIcon /> },
+    { label: 'PvPパーティ登録', path: '/parties/new', icon: <AddIcon /> },
     { divider: true },
     { label: '価格計算機', path: '/calculator', icon: <CalcIcon /> },
   ];

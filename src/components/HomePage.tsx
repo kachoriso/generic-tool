@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Typography, Box, Card, CardContent, CardActions, Button } from '@mui/material';
-import { Assignment as TodoIcon, SportsEsports as PvpIcon, Calculate as CalcIcon } from '@mui/icons-material';
+import { Assignment as TodoIcon, SportsEsports as PvpIcon, Calculate as CalcIcon, Home as HomeIcon } from '@mui/icons-material';
 
 export default function HomePage() {
   const handleNavigation = (path: string) => {
@@ -9,18 +9,17 @@ export default function HomePage() {
 
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-      <Typography 
-        variant="h3" 
-        component="h1" 
-        gutterBottom 
-        align="center" 
-        sx={{ 
-          mb: 4,
-          fontSize: { xs: '1.8rem', sm: '2.5rem', md: '3rem' }
-        }}
-      >
-        Generic Tools
-      </Typography>
+      {/* ページタイトル */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, justifyContent: 'center' }}>
+        <HomeIcon sx={{ fontSize: { xs: 32, sm: 40 }, color: 'primary.main' }} />
+        <Typography 
+          variant="h5"
+          component="h1" 
+          sx={{ fontWeight: 600, color: 'primary.main', textAlign: 'center' }}
+        >
+          Generic Tools
+        </Typography>
+      </Box>
       
       <Typography variant="h6" component="p" align="center" color="text.secondary" sx={{ mb: 6 }}>
         使用する機能を選択してください

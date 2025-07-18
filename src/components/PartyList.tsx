@@ -26,6 +26,7 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Visibility as ViewIcon,
+  List as ListIcon,
 } from '@mui/icons-material';
 import { PartyApiClient, useApiState } from '../lib/api';
 import type { PvpParty, League } from '../types/database';
@@ -149,13 +150,21 @@ export default function PartyList({
 
   return (
     <Box sx={{ maxWidth: 1200, margin: '0 auto', padding: 3 }}>
-      {/* ヘッダー */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold' }}>
-          🎮 PvPパーティ一覧
+      {/* ページタイトル */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, justifyContent: 'center' }}>
+        <ListIcon sx={{ fontSize: { xs: 32, sm: 40 }, color: 'primary.main' }} />
+        <Typography 
+          variant="h5"
+          component="h1" 
+          sx={{ fontWeight: 600, color: 'primary.main', textAlign: 'center' }}
+        >
+          PvPパーティ一覧
         </Typography>
-        
-        {onNavigateToForm && (
+      </Box>
+
+      {/* 新規作成ボタン */}
+      {onNavigateToForm && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
@@ -164,8 +173,8 @@ export default function PartyList({
           >
             新しいパーティを作成
           </Button>
-        )}
-      </Box>
+        </Box>
+      )}
 
       {/* フィルター */}
       <Card sx={{ mb: 3 }}>

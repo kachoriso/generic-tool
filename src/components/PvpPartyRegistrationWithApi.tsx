@@ -11,7 +11,7 @@ import {
   DialogActions,
   Button,
 } from '@mui/material';
-import { CheckCircle, List as ListIcon } from '@mui/icons-material';
+import { CheckCircle, List as ListIcon, SportsEsports } from '@mui/icons-material';
 import { PvpPartyRegistration } from './PvpPartyRegistration';
 import { PartyApiClient, useApiState, handleApiError } from '../lib/api';
 import { convertFormToDbInput, convertDbToForm, validatePartyInput, getSuccessMessage, getErrorMessage } from '../utils/partyDataAdapter';
@@ -156,6 +156,18 @@ export const PvpPartyRegistrationWithApi: React.FC<PvpPartyRegistrationWithApiPr
 
   return (
     <Box sx={{ maxWidth: 800, margin: '0 auto', padding: { xs: 1, sm: 3 } }}>
+      {/* ページタイトル */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, justifyContent: 'center' }}>
+        <SportsEsports sx={{ fontSize: { xs: 32, sm: 40 }, color: 'primary.main' }} />
+        <Typography 
+          variant="h5"
+          component="h1" 
+          sx={{ fontWeight: 600, color: 'primary.main', textAlign: 'center' }}
+        >
+          PvPパーティ登録
+        </Typography>
+      </Box>
+
       {/* エラー表示 */}
       {(loadError || saveError) && (
         <Alert severity="error" sx={{ mb: 3 }}>
