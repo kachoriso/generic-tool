@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Typography, Box, Card, CardContent, CardActions, Button } from '@mui/material';
-import { Assignment as TodoIcon, SportsEsports as PvpIcon, Calculate as CalcIcon, Home as HomeIcon } from '@mui/icons-material';
+import { Assignment as TodoIcon, SportsEsports as PvpIcon, Calculate as CalcIcon, Home as HomeIcon, Add as CounterIcon } from '@mui/icons-material';
 
 export default function HomePage() {
   const handleNavigation = (path: string) => {
@@ -49,6 +49,31 @@ export default function HomePage() {
                 variant="contained" 
                 size="large"
                 onClick={() => handleNavigation('/todos')}
+                sx={{ minWidth: 120 }}
+              >
+                開始
+              </Button>
+            </CardActions>
+          </Card>
+        </Box>
+
+        <Box sx={{ flex: { md: 1 }, minWidth: { xs: '100%', sm: '280px' }, maxWidth: { md: '300px' } }}>
+          <Card elevation={3} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <CardContent sx={{ flexGrow: 1, textAlign: 'center', py: 4 }}>
+              <CounterIcon sx={{ fontSize: 80, color: 'info.main', mb: 2 }} />
+              <Typography variant="h5" component="h2" gutterBottom>
+                カウンター
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                数をカウントできるシンプルなツールです。大きな表示で見やすく、操作も簡単です。
+              </Typography>
+            </CardContent>
+            <CardActions sx={{ justifyContent: 'center', pb: 3 }}>
+              <Button 
+                variant="contained" 
+                size="large"
+                color="info"
+                onClick={() => handleNavigation('/counter')}
                 sx={{ minWidth: 120 }}
               >
                 開始

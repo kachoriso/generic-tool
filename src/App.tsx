@@ -7,6 +7,7 @@ import TodoList from './components/TodoList';
 import HomePage from './components/HomePage';
 import PartyDetail from './components/PartyDetail';
 import { PriceCalculator } from './components/PriceCalculator';
+import Counter from './components/Counter';
 import { Navigation } from './components/Navigation';
 
 // テーマ設定
@@ -78,6 +79,12 @@ function App() {
               <Route 
                 path="/todos" 
                 element={<TodoList />}
+              />
+              
+              {/* カウンターページ */}
+              <Route 
+                path="/counter" 
+                element={<Counter />}
               />
               
               {/* 価格計算機ページ */}

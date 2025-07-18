@@ -20,6 +20,7 @@ import {
   Calculate as CalcIcon,
   List as ListIcon,
   Add as AddIcon,
+  Add as CounterIcon,
 } from '@mui/icons-material';
 
 interface NavigationProps {
@@ -42,6 +43,7 @@ export const Navigation: React.FC<NavigationProps> = ({ currentPath = '/' }) => 
     { label: 'ホーム', path: '/', icon: <HomeIcon /> },
     { divider: true },
     { label: 'TODOリスト', path: '/todos', icon: <TodoIcon /> },
+    { label: 'カウンター', path: '/counter', icon: <CounterIcon /> },
     { divider: true },
     { label: 'PvPパーティ一覧', path: '/parties', icon: <ListIcon /> },
     { label: 'PvPパーティ登録', path: '/parties/new', icon: <AddIcon /> },
