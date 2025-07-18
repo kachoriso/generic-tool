@@ -210,7 +210,15 @@ app.get('/api/parties/:id', async (req, res) => {
 app.post('/api/parties', async (req, res) => {
   try {
     const formData = req.body;
-    console.log('🎮 パーティ作成リクエスト受信:', JSON.stringify(formData, null, 2));
+    console.log('🎮 パーティ作成リクエスト受信:');
+    console.log('  📝 タイトル:', formData.title);
+    console.log('  🏆 リーグ:', formData.league);
+    console.log('  🐾 ポケモン1:', JSON.stringify(formData.pokemon1, null, 2));
+    console.log('  🐾 ポケモン2:', JSON.stringify(formData.pokemon2, null, 2));
+    console.log('  🐾 ポケモン3:', JSON.stringify(formData.pokemon3, null, 2));
+    console.log('  🖼️ 画像あり:', !!formData.image, '長さ:', formData.image?.length || 0);
+    console.log('  ✂️ 切り抜き画像あり:', !!formData.croppedImage, '長さ:', formData.croppedImage?.length || 0);
+    console.log('  🔍 全キー:', Object.keys(formData));
     
     // フォームデータをデータベース形式に変換
     console.log('📁 partyDataAdapterのインポートを試行中...');
