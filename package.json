@@ -19,7 +19,7 @@
     "url": "https://github.com/kachoriso/generic-tool.git"
   },
   "engines": {
-    "node": "22.17.1",
+    "node": ">=22.0.0",
     "npm": ">=8.0.0"
   },
   "cacheDirectories": [],

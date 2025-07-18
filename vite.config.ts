@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -8,6 +9,8 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     sourcemap: false,
+    minify: 'esbuild',
+    target: 'es2018',
     rollupOptions: {
       external: [],  // Empty external to ensure all dependencies are bundled
       output: {
@@ -21,14 +24,27 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom'],
+    include: [
+      'react', 
+      'react-dom', 
+      'react-router-dom',
+      '@mui/material',
+      '@mui/icons-material',
+      '@emotion/react',
+      '@emotion/styled'
+    ],
     force: true  // Force re-optimization
   },
   resolve: {
     dedupe: ['react', 'react-dom'],
     alias: {
-      // Ensure react-router-dom uses the correct React instance
-      'react-router-dom': 'react-router-dom'
+      '@': path.resolve(__dirname, './src'),
+      // Ensure proper module resolution
+      'react-router-dom': path.resolve(__dirname, './node_modules/react-router-dom')
     }
+  },
+  // Ensure proper resolution for all environments
+  esbuild: {
+    target: 'es2018'
   }
 })
