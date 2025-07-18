@@ -10,12 +10,12 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       output: {
-        // Remove manualChunks to avoid dependency resolution issues on Render
+        manualChunks: undefined
       }
     }
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom', '@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled']
+    include: ['react', 'react-dom', 'react-router-dom']
   },
   resolve: {
     dedupe: ['react', 'react-dom']
