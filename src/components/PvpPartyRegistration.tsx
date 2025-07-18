@@ -776,8 +776,16 @@ export const PvpPartyRegistration: React.FC<PvpPartyRegistrationProps> = ({ part
   return (
     <Box sx={{ p: { xs: 1, sm: 2 }, maxWidth: 800, mx: 'auto' }}>
       <Paper elevation={1} sx={{ p: { xs: 2, sm: 3 }, border: '1px solid', borderColor: 'grey.200' }}>
-        <Typography variant="h5" gutterBottom color="primary" sx={{ fontWeight: 600 }}>
-          📱 {party ? 'PvPパーティ編集' : 'PvPパーティ登録'}
+        <Typography 
+          variant="h6" 
+          gutterBottom 
+          color="primary" 
+          sx={{ 
+            fontWeight: 600,
+            fontSize: { xs: '1.1rem', sm: '1.25rem' }
+          }}
+        >
+          {party ? '編集' : '新規登録'}
         </Typography>
         
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>

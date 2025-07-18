@@ -155,20 +155,7 @@ export const PvpPartyRegistrationWithApi: React.FC<PvpPartyRegistrationWithApiPr
   }
 
   return (
-    <Box sx={{ maxWidth: 800, margin: '0 auto', padding: 3 }}>
-      {/* ページヘッダー */}
-      <Paper sx={{ p: 3, mb: 3, bgcolor: 'primary.main', color: 'white' }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          {partyId ? '📝 パーティ編集' : '🎮 新しいパーティを作成'}
-        </Typography>
-        <Typography variant="body1">
-          {partyId 
-            ? 'パーティの情報を編集できます。変更後は保存ボタンを押してください。'
-            : 'ポケモンGO PvP用のパーティを登録しましょう！'
-          }
-        </Typography>
-      </Paper>
-
+    <Box sx={{ maxWidth: 800, margin: '0 auto', padding: { xs: 1, sm: 3 } }}>
       {/* エラー表示 */}
       {(loadError || saveError) && (
         <Alert severity="error" sx={{ mb: 3 }}>
