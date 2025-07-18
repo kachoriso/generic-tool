@@ -46,16 +46,27 @@ app.get('/api/test-db', async (req, res) => {
     console.log('DATABASE_URL:', process.env.DATABASE_URL.substring(0, 50) + '...');
 
     // データベース接続テスト
-    const result = await testConnection();
+    const testResult = await testConnection();
     
-    console.log('データベース接続テスト成功:', result);
-    
-    res.json({
-      success: true,
-      message: 'データベース接続が成功しました！',
-      result: result,
-      timestamp: new Date().toISOString()
-    });
+    if (testResult.success) {
+      console.log('データベース接続テスト成功:', testResult.details);
+      
+      res.json({
+        success: true,
+        message: 'データベース接続が成功しました！',
+        result: testResult.details,
+        timestamp: new Date().toISOString()
+      });
+    } else {
+      console.error('データベース接続テスト失敗:', testResult.error);
+      
+      res.status(500).json({
+        success: false,
+        error: testResult.error,
+        details: testResult.details,
+        timestamp: new Date().toISOString()
+      });
+    }
   } catch (error) {
     console.error('データベース接続エラー:', error);
     

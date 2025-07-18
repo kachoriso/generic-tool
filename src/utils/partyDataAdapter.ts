@@ -11,34 +11,66 @@ export function convertFormToDbInput(formParty: Omit<PvpParty, 'id' | 'createdAt
     image: formParty.image,
     croppedImage: formParty.croppedImage,
     hasImage: !!formParty.image,
-    hasCroppedImage: !!formParty.croppedImage
+    hasCroppedImage: !!formParty.croppedImage,
+    pokemon1: formParty.pokemon1,
+    pokemon2: formParty.pokemon2,
+    pokemon3: formParty.pokemon3,
+    hasPokemon1: !!formParty.pokemon1,
+    hasPokemon2: !!formParty.pokemon2,
+    hasPokemon3: !!formParty.pokemon3
   });
 
+  // ポケモンデータの安全な取得用のヘルパー関数
+  const safeGetPokemon = (pokemon: any, defaultId: string) => {
+    if (!pokemon || typeof pokemon !== 'object') {
+      console.warn(`⚠️ ポケモンデータが無効: ${JSON.stringify(pokemon)}, デフォルト値を使用`);
+      return {
+        id: defaultId,
+        normalMove: '',
+        specialMove1: '',
+        specialMove2: ''
+      };
+    }
+    return {
+      id: pokemon.id || defaultId,
+      normalMove: pokemon.normalMove || '',
+      specialMove1: pokemon.specialMove1 || '',
+      specialMove2: pokemon.specialMove2 || ''
+    };
+  };
+
   const pokemon: Omit<DbPokemon, 'id' | 'party_id' | 'created_at'>[] = [];
+
+  // 安全にポケモンデータを変換
+  const safePokemon1 = safeGetPokemon(formParty.pokemon1, '1');
+  const safePokemon2 = safeGetPokemon(formParty.pokemon2, '2');
+  const safePokemon3 = safeGetPokemon(formParty.pokemon3, '3');
+
+  console.log('🐾 安全なポケモンデータ:', { safePokemon1, safePokemon2, safePokemon3 });
 
   // 全てのポケモンを登録（技が空でも）
   // ポケモン1の変換
   pokemon.push({
     pokemon_order: 1,
-    normal_move: formParty.pokemon1.normalMove || null,
-    special_move_1: formParty.pokemon1.specialMove1 || null,
-    special_move_2: formParty.pokemon1.specialMove2 || null,
+    normal_move: safePokemon1.normalMove || null,
+    special_move_1: safePokemon1.specialMove1 || null,
+    special_move_2: safePokemon1.specialMove2 || null,
   });
 
   // ポケモン2の変換
   pokemon.push({
     pokemon_order: 2,
-    normal_move: formParty.pokemon2.normalMove || null,
-    special_move_1: formParty.pokemon2.specialMove1 || null,
-    special_move_2: formParty.pokemon2.specialMove2 || null,
+    normal_move: safePokemon2.normalMove || null,
+    special_move_1: safePokemon2.specialMove1 || null,
+    special_move_2: safePokemon2.specialMove2 || null,
   });
 
   // ポケモン3の変換
   pokemon.push({
     pokemon_order: 3,
-    normal_move: formParty.pokemon3.normalMove || null,
-    special_move_1: formParty.pokemon3.specialMove1 || null,
-    special_move_2: formParty.pokemon3.specialMove2 || null,
+    normal_move: safePokemon3.normalMove || null,
+    special_move_1: safePokemon3.specialMove1 || null,
+    special_move_2: safePokemon3.specialMove2 || null,
   });
 
   // カスタムリーグの処理を改善
