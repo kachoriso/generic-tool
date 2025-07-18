@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
   Box,
   Paper,
@@ -101,6 +101,42 @@ export const PvpPartyRegistration: React.FC<PvpPartyRegistrationProps> = ({ part
   const [image, setImage] = useState<string>(party?.image || '');
   const [croppedImage, setCroppedImage] = useState<string>(party?.croppedImage || '');
   const [showSuccess, setShowSuccess] = useState(false);
+  
+  // 編集モードでpartyプロパティが変更されたときにフォームを更新
+  useEffect(() => {
+    if (party) {
+      console.log('📝 編集データをフォームに設定:', party);
+      setTitle(party.title || '');
+      
+      // リーグ設定
+      if (party.league && presetLeagues.includes(party.league)) {
+        setSelectedLeague(party.league);
+        setCustomLeague('');
+      } else if (party.league) {
+        setSelectedLeague('その他');
+        setCustomLeague(party.league);
+      }
+      
+      // ポケモンデータ設定
+      setPokemon1(party.pokemon1 || { ...initialPokemon, id: '1' });
+      setPokemon2(party.pokemon2 || { ...initialPokemon, id: '2' });
+      setPokemon3(party.pokemon3 || { ...initialPokemon, id: '3' });
+      
+      // 画像データ設定
+      setImage(party.image || '');
+      setCroppedImage(party.croppedImage || '');
+      
+      console.log('✅ フォームデータ設定完了:', {
+        title: party.title,
+        league: party.league,
+        pokemon1: party.pokemon1,
+        pokemon2: party.pokemon2,
+        pokemon3: party.pokemon3,
+        hasImage: !!party.image,
+        hasCroppedImage: !!party.croppedImage
+      });
+    }
+  }, [party]);
   
   // 画像切り抜き関連
   const [showCropDialog, setShowCropDialog] = useState(false);

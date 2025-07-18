@@ -40,11 +40,28 @@ export const PvpPartyRegistrationWithApi: React.FC<PvpPartyRegistrationWithApiPr
     if (partyId) {
       const loadParty = async () => {
         try {
-          const dbParty = await PartyApiClient.getParty(partyId);
+          console.log('📖 編集モード: パーティデータ読み込み開始', partyId);
+          const dbParty = await executeLoad(async () => {
+            return await PartyApiClient.getParty(partyId);
+          });
+          
+          console.log('📖 データベースから取得したパーティ:', dbParty);
           const convertedParty = convertDbToForm(dbParty);
+          console.log('📖 フォーム形式に変換したパーティ:', {
+            id: convertedParty.id,
+            title: convertedParty.title,
+            league: convertedParty.league,
+            pokemon1: convertedParty.pokemon1,
+            pokemon2: convertedParty.pokemon2,
+            pokemon3: convertedParty.pokemon3,
+            hasImage: !!convertedParty.image,
+            hasCroppedImage: !!convertedParty.croppedImage
+          });
+          
           setFormParty(convertedParty);
+          console.log('✅ 編集フォームにデータ設定完了');
         } catch (error) {
-          console.error('パーティの読み込みに失敗しました:', error);
+          console.error('❌ パーティの読み込みに失敗しました:', error);
         }
       };
       loadParty();
@@ -193,11 +210,26 @@ export const PvpPartyRegistrationWithApi: React.FC<PvpPartyRegistrationWithApiPr
       )}
 
       {/* メインフォーム */}
-      <PvpPartyRegistration
-        party={formParty}
-        onSave={handleSave}
-        onNavigateToList={onNavigateToList}
-      />
+      {(partyId && loadLoading) ? (
+        <Paper elevation={1} sx={{ p: 4, textAlign: 'center' }}>
+          <CircularProgress size={48} sx={{ mb: 2 }} />
+          <Typography variant="h6" color="text.secondary">
+            パーティデータを読み込み中...
+          </Typography>
+        </Paper>
+      ) : (partyId && !formParty) ? (
+        <Paper elevation={1} sx={{ p: 4, textAlign: 'center' }}>
+          <Typography variant="h6" color="error">
+            パーティデータの読み込みに失敗しました
+          </Typography>
+        </Paper>
+      ) : (
+        <PvpPartyRegistration
+          party={formParty}
+          onSave={handleSave}
+          onNavigateToList={onNavigateToList}
+        />
+      )}
 
       {/* 成功ダイアログ */}
       <Dialog
