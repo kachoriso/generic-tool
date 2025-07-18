@@ -7,16 +7,17 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    sourcemap: false,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor': ['react', 'react-dom', 'react-router-dom'],
-          'mui': ['@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled']
-        }
+        // Remove manualChunks to avoid dependency resolution issues on Render
       }
     }
   },
   optimizeDeps: {
-    include: ['react-router-dom', '@mui/material', '@mui/icons-material']
+    include: ['react', 'react-dom', 'react-router-dom', '@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled']
+  },
+  resolve: {
+    dedupe: ['react', 'react-dom']
   }
 })
