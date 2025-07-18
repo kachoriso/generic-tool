@@ -11,7 +11,12 @@ export default defineConfig({
     rollupOptions: {
       external: [],  // Empty external to ensure all dependencies are bundled
       output: {
-        manualChunks: undefined
+        manualChunks: {
+          // Explicitly group react-router-dom with other vendor libraries
+          'vendor': ['react', 'react-dom'],
+          'router': ['react-router-dom'],
+          'mui': ['@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled']
+        }
       }
     }
   },
@@ -20,6 +25,10 @@ export default defineConfig({
     force: true  // Force re-optimization
   },
   resolve: {
-    dedupe: ['react', 'react-dom']
+    dedupe: ['react', 'react-dom'],
+    alias: {
+      // Ensure react-router-dom uses the correct React instance
+      'react-router-dom': 'react-router-dom'
+    }
   }
 })
