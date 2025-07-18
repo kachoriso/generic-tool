@@ -593,6 +593,41 @@ export const PvpPartyRegistration: React.FC<PvpPartyRegistrationProps> = ({ part
     const compressedImage = image ? await compressImage(image, 400, 0.3) : '';
     const compressedCroppedImage = croppedImage ? await compressImage(croppedImage, 400, 0.3) : '';
 
+    // 送信前のデータ詳細ログ
+    console.log('📤 フロントエンドから送信するデータ:');
+    console.log('  📝 タイトル:', finalTitle);
+    console.log('  🏆 リーグ:', finalLeague);
+    console.log('  🐾 ポケモン1詳細:', {
+      id: pokemon1.id,
+      normalMove: pokemon1.normalMove,
+      specialMove1: pokemon1.specialMove1,
+      specialMove2: pokemon1.specialMove2,
+      hasNormalMove: !!pokemon1.normalMove,
+      normalMoveLength: pokemon1.normalMove?.length || 0
+    });
+    console.log('  🐾 ポケモン2詳細:', {
+      id: pokemon2.id,
+      normalMove: pokemon2.normalMove,
+      specialMove1: pokemon2.specialMove1,
+      specialMove2: pokemon2.specialMove2,
+      hasNormalMove: !!pokemon2.normalMove,
+      normalMoveLength: pokemon2.normalMove?.length || 0
+    });
+    console.log('  🐾 ポケモン3詳細:', {
+      id: pokemon3.id,
+      normalMove: pokemon3.normalMove,
+      specialMove1: pokemon3.specialMove1,
+      specialMove2: pokemon3.specialMove2,
+      hasNormalMove: !!pokemon3.normalMove,
+      normalMoveLength: pokemon3.normalMove?.length || 0
+    });
+    console.log('  🖼️ 画像データ:', {
+      hasOriginal: !!compressedImage,
+      hasCropped: !!compressedCroppedImage,
+      originalSize: compressedImage ? Math.round(compressedImage.length / 1024) + 'KB' : '0KB',
+      croppedSize: compressedCroppedImage ? Math.round(compressedCroppedImage.length / 1024) + 'KB' : '0KB'
+    });
+
     const party: Omit<PvpParty, 'id' | 'createdAt'> = {
       title: finalTitle,
       league: finalLeague,
@@ -604,6 +639,15 @@ export const PvpPartyRegistration: React.FC<PvpPartyRegistrationProps> = ({ part
     };
 
     console.log('📦 最終パーティデータサイズ:', Math.round(JSON.stringify(party).length / 1024), 'KB');
+    console.log('📊 最終パーティオブジェクト詳細:', {
+      title: party.title,
+      league: party.league,
+      pokemon1Keys: Object.keys(party.pokemon1),
+      pokemon2Keys: Object.keys(party.pokemon2),
+      pokemon3Keys: Object.keys(party.pokemon3),
+      hasImage: !!party.image,
+      hasCroppedImage: !!party.croppedImage
+    });
 
     onSave(party);
     

@@ -441,6 +441,84 @@ app.get('/api/parties/stats/leagues', async (req, res) => {
   }
 });
 
+// デバッグ用API - 最後に作成されたパーティの詳細を確認
+app.get('/api/debug/latest-party', async (req, res) => {
+  try {
+    console.log('🔍 最新パーティの詳細をデバッグ確認中...');
+    
+    // 最新のパーティを取得
+    const latestParty = await pvpPartyRepository.findAll({ limit: 1 });
+    
+    if (latestParty.length === 0) {
+      return res.json({
+        success: false,
+        message: '登録されたパーティがありません',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // パーティの詳細情報を取得
+    const partyDetail = await pvpPartyRepository.findById(latestParty[0].id);
+    
+    if (!partyDetail) {
+      return res.json({
+        success: false,
+        message: 'パーティの詳細が見つかりません',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // デバッグ情報を構築
+    const debugInfo = {
+      party: {
+        id: partyDetail.id,
+        title: partyDetail.title,
+        league: partyDetail.league,
+        custom_league: partyDetail.custom_league,
+        hasPartyImage: !!partyDetail.party_image_url,
+        hasCroppedImage: !!partyDetail.cropped_image_url,
+        partyImageSize: partyDetail.party_image_url ? Math.round(partyDetail.party_image_url.length / 1024) + 'KB' : '0KB',
+        croppedImageSize: partyDetail.cropped_image_url ? Math.round(partyDetail.cropped_image_url.length / 1024) + 'KB' : '0KB',
+        created_at: partyDetail.created_at
+      },
+      pokemon: partyDetail.pokemon.map(p => ({
+        id: p.id,
+        pokemon_order: p.pokemon_order,
+        normal_move: p.normal_move,
+        special_move_1: p.special_move_1,
+        special_move_2: p.special_move_2,
+        hasNormalMove: !!p.normal_move,
+        hasSpecialMove1: !!p.special_move_1,
+        hasSpecialMove2: !!p.special_move_2,
+        normalMoveLength: p.normal_move?.length || 0,
+        specialMove1Length: p.special_move_1?.length || 0,
+        specialMove2Length: p.special_move_2?.length || 0
+      })),
+      summary: {
+        totalPokemon: partyDetail.pokemon.length,
+        pokemonWithMoves: partyDetail.pokemon.filter(p => p.normal_move || p.special_move_1 || p.special_move_2).length,
+        pokemonWithNormalMoves: partyDetail.pokemon.filter(p => p.normal_move).length,
+        pokemonWithSpecialMoves: partyDetail.pokemon.filter(p => p.special_move_1 || p.special_move_2).length
+      }
+    };
+    
+    console.log('🎯 デバッグ情報:', JSON.stringify(debugInfo, null, 2));
+    
+    res.json({
+      success: true,
+      data: debugInfo,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('❌ デバッグAPI エラー:', error);
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : '不明なエラーが発生しました',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // React Routerのフォールバック（全てのルートでindex.htmlを返す）
 app.get('*', (req, res) => {
   res.sendFile(path.join(process.cwd(), 'dist', 'index.html'));
