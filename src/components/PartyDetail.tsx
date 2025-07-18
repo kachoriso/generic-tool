@@ -19,7 +19,7 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   ArrowBack as ArrowBackIcon,
-  SportsEsports as PvpIcon,
+  SportsEsports,
 } from '@mui/icons-material';
 import { PartyApiClient } from '../lib/api';
 import type { PvpPartyDetail } from '../types/database';
@@ -128,15 +128,23 @@ export default function PartyDetail() {
 
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-      {/* ヘッダー */}
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+      {/* ページタイトル */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, justifyContent: 'center' }}>
+        <SportsEsports sx={{ fontSize: { xs: 32, sm: 40 }, color: 'primary.main' }} />
+        <Typography 
+          variant="h5"
+          component="h1" 
+          sx={{ fontWeight: 600, color: 'primary.main', textAlign: 'center' }}
+        >
+          パーティ詳細
+        </Typography>
+      </Box>
+
+      {/* 戻るボタンと操作ボタン */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <IconButton onClick={handleBack} sx={{ mr: 2 }}>
           <ArrowBackIcon />
         </IconButton>
-        <PvpIcon sx={{ mr: 1, color: 'primary.main' }} />
-        <Typography variant="h4" component="h1" sx={{ flexGrow: 1 }}>
-          パーティ詳細
-        </Typography>
         <Box sx={{ display: 'flex', gap: 1 }}>
           <IconButton onClick={handleEdit} color="primary">
             <EditIcon />
@@ -161,76 +169,30 @@ export default function PartyDetail() {
             />
           </Box>
 
-          {/* 画像表示 */}
-          {(party.cropped_image_url || party.party_image_url) && (
+          {/* 画像表示（切り抜き画像のみ） */}
+          {party.cropped_image_url && (
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" gutterBottom>
                 パーティ画像
               </Typography>
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                {party.cropped_image_url && (
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      切り抜き画像
-                    </Typography>
-                    <CardMedia
-                      component="img"
-                      image={party.cropped_image_url}
-                      alt="切り抜き画像"
-                      sx={{
-                        width: 200,
-                        height: 'auto',
-                        borderRadius: 1,
-                        border: '1px solid',
-                        borderColor: 'divider',
-                      }}
-                    />
-                  </Box>
-                )}
-                {party.party_image_url && (
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      元画像
-                    </Typography>
-                    <CardMedia
-                      component="img"
-                      image={party.party_image_url}
-                      alt="元画像"
-                      sx={{
-                        width: 200,
-                        height: 'auto',
-                        borderRadius: 1,
-                        border: '1px solid',
-                        borderColor: 'divider',
-                      }}
-                    />
-                  </Box>
-                )}
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <CardMedia
+                  component="img"
+                  image={party.cropped_image_url}
+                  alt="パーティ画像"
+                  sx={{
+                    width: 200,
+                    height: 'auto',
+                    borderRadius: 1,
+                    border: '1px solid',
+                    borderColor: 'divider',
+                  }}
+                />
               </Box>
             </Box>
           )}
 
           <Divider sx={{ my: 2 }} />
-
-          {/* 作成・更新日時 */}
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="body2" color="text.secondary">
-                作成日時
-              </Typography>
-              <Typography variant="body1">
-                {new Date(party.created_at).toLocaleString('ja-JP')}
-              </Typography>
-            </Box>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="body2" color="text.secondary">
-                更新日時
-              </Typography>
-              <Typography variant="body1">
-                {new Date(party.updated_at).toLocaleString('ja-JP')}
-              </Typography>
-            </Box>
-          </Box>
         </CardContent>
       </Card>
 
@@ -239,7 +201,7 @@ export default function PartyDetail() {
         ポケモン構成
       </Typography>
       {party.pokemon && party.pokemon.length > 0 ? (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 3 }}>
           {party.pokemon.map((pokemon, index) => (
             <Paper key={pokemon.id} elevation={2} sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>
@@ -275,12 +237,36 @@ export default function PartyDetail() {
           ))}
         </Box>
       ) : (
-        <Paper elevation={1} sx={{ p: 3, textAlign: 'center' }}>
+        <Paper elevation={1} sx={{ p: 3, textAlign: 'center', mb: 3 }}>
           <Typography variant="body1" color="text.secondary">
             ポケモン情報が登録されていません
           </Typography>
         </Paper>
       )}
+
+      {/* 作成・更新日時（最下部） */}
+      <Card elevation={1} sx={{ mb: 3 }}>
+        <CardContent>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="body2" color="text.secondary">
+                作成日時
+              </Typography>
+              <Typography variant="body1">
+                {new Date(party.created_at).toLocaleString('ja-JP')}
+              </Typography>
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="body2" color="text.secondary">
+                更新日時
+              </Typography>
+              <Typography variant="body1">
+                {new Date(party.updated_at).toLocaleString('ja-JP')}
+              </Typography>
+            </Box>
+          </Box>
+        </CardContent>
+      </Card>
 
       {/* アクションボタン */}
       <Box sx={{ mt: 4, display: 'flex', gap: 2, justifyContent: 'center' }}>

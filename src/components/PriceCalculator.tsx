@@ -120,13 +120,13 @@ export const PriceCalculator: React.FC = () => {
   return (
     <Container maxWidth={isMobile ? "sm" : "lg"} sx={{ py: 2, px: { xs: 1, sm: 3 } }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, justifyContent: 'center' }}>
-        <Calculate sx={{ fontSize: { xs: 32, sm: 40 }, color: '#6366f1' }} />
+        <Calculate sx={{ fontSize: { xs: 32, sm: 40 }, color: 'primary.main' }} />
         <Typography 
-          variant={isMobile ? "h5" : "h4"} 
+          variant="h5"
           component="h1" 
-          sx={{ fontWeight: 600, color: '#1f2937', textAlign: 'center' }}
+          sx={{ fontWeight: 600, color: 'primary.main', textAlign: 'center' }}
         >
-          容量あたりの値段計算機
+          価格比較計算機
         </Typography>
       </Box>
 

@@ -87,7 +87,7 @@ export default function HomePage() {
             <CardContent sx={{ flexGrow: 1, textAlign: 'center', py: 4 }}>
               <CalcIcon sx={{ fontSize: 80, color: 'success.main', mb: 2 }} />
               <Typography variant="h5" component="h2" gutterBottom>
-                価格計算機
+                価格比較計算機
               </Typography>
               <Typography variant="body1" color="text.secondary">
                 容量・価格から単位あたりの価格を計算できます。お買い物の際の比較に便利です。

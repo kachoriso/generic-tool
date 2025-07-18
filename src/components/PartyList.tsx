@@ -183,7 +183,7 @@ export default function PartyList({
             🔍 検索・フィルター
           </Typography>
           
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, alignItems: 'stretch' }}>
             <TextField
               fullWidth
               label="パーティ名で検索"
@@ -192,10 +192,10 @@ export default function PartyList({
               InputProps={{
                 startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />
               }}
-              sx={{ flex: 1 }}
+              sx={{ flex: 1, minWidth: { xs: '100%', md: '250px' } }}
             />
             
-            <FormControl sx={{ minWidth: 200, flex: 1 }}>
+            <FormControl sx={{ flex: 1, minWidth: { xs: '100%', md: '250px' } }}>
               <InputLabel>リーグ</InputLabel>
               <Select
                 value={selectedLeague}
@@ -215,7 +215,7 @@ export default function PartyList({
               variant="outlined"
               onClick={resetFilters}
               disabled={!searchTitle && !selectedLeague}
-              sx={{ minWidth: 140 }}
+              sx={{ flex: 1, minWidth: { xs: '100%', md: '250px' } }}
             >
               フィルターをリセット
             </Button>
@@ -275,8 +275,10 @@ export default function PartyList({
                       display: 'flex',
                       flexDirection: 'column',
                       transition: 'transform 0.2s',
+                      cursor: onViewParty ? 'pointer' : 'default',
                       '&:hover': { transform: 'translateY(-4px)' }
                     }}
+                    onClick={() => onViewParty && onViewParty(party.id)}
                   >
                     <CardContent sx={{ flexGrow: 1 }}>
                       {/* パーティタイトル */}
@@ -301,18 +303,6 @@ export default function PartyList({
                         )}
                       </Box>
 
-                      {/* 作成日時 */}
-                      <Typography variant="body2" color="text.secondary" gutterBottom>
-                        作成: {formatDate(party.created_at.toString())}
-                      </Typography>
-
-                      {/* 更新日時 */}
-                      {party.updated_at !== party.created_at && (
-                        <Typography variant="body2" color="text.secondary">
-                          更新: {formatDate(party.updated_at.toString())}
-                        </Typography>
-                      )}
-
                       {/* 画像プレビュー */}
                       {party.cropped_image_url && (
                         <Box sx={{ mt: 2, textAlign: 'center' }}>
@@ -328,25 +318,30 @@ export default function PartyList({
                           />
                         </Box>
                       )}
+
+                      {/* 作成日時・更新日時を最下部に */}
+                      <Box sx={{ mt: 'auto', pt: 2 }}>
+                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                          作成: {formatDate(party.created_at.toString())}
+                        </Typography>
+                        {party.updated_at !== party.created_at && (
+                          <Typography variant="body2" color="text.secondary">
+                            更新: {formatDate(party.updated_at.toString())}
+                          </Typography>
+                        )}
+                      </Box>
                     </CardContent>
 
-                    {/* アクションボタン */}
+                    {/* アクションボタン（編集・削除のみ） */}
                     <Box sx={{ p: 2, pt: 0 }}>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                        {onViewParty && (
-                          <IconButton
-                            color="primary"
-                            onClick={() => onViewParty(party.id)}
-                            title="詳細を見る"
-                          >
-                            <ViewIcon />
-                          </IconButton>
-                        )}
-                        
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
                         {onEditParty && (
                           <IconButton
                             color="secondary"
-                            onClick={() => onEditParty(party.id)}
+                            onClick={(e) => {
+                              e.stopPropagation(); // カードクリックイベントを阻止
+                              onEditParty(party.id);
+                            }}
                             title="編集"
                           >
                             <EditIcon />
@@ -355,7 +350,10 @@ export default function PartyList({
                         
                         <IconButton
                           color="error"
-                          onClick={() => openDeleteDialog(party)}
+                          onClick={(e) => {
+                            e.stopPropagation(); // カードクリックイベントを阻止
+                            openDeleteDialog(party);
+                          }}
                           title="削除"
                         >
                           <DeleteIcon />
