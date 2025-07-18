@@ -44,7 +44,28 @@ async function apiRequest<T>(
     url,
     method: config.method || 'GET',
     headers: config.headers,
-    body: config.body
+    body: config.body,
+    // JSONデータをパースして詳細表示
+    bodyParsed: config.body ? (() => {
+      try {
+        const parsed = JSON.parse(config.body as string);
+        return {
+          title: parsed.title,
+          league: parsed.league,
+          hasPokemon1: !!parsed.pokemon1,
+          hasPokemon2: !!parsed.pokemon2,
+          hasPokemon3: !!parsed.pokemon3,
+          pokemon1Details: parsed.pokemon1,
+          pokemon2Details: parsed.pokemon2,
+          pokemon3Details: parsed.pokemon3,
+          hasImage: !!parsed.image,
+          hasCroppedImage: !!parsed.croppedImage,
+          allKeys: Object.keys(parsed)
+        };
+      } catch (e) {
+        return 'JSON parse error';
+      }
+    })() : null
   });
 
   try {

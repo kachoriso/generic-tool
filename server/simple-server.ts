@@ -206,7 +206,7 @@ app.get('/api/parties/:id', async (req, res) => {
   }
 });
 
-// パーティ作成
+// パーティ作成API
 app.post('/api/parties', async (req, res) => {
   try {
     const formData = req.body;
@@ -219,6 +219,21 @@ app.post('/api/parties', async (req, res) => {
     console.log('  🖼️ 画像あり:', !!formData.image, '長さ:', formData.image?.length || 0);
     console.log('  ✂️ 切り抜き画像あり:', !!formData.croppedImage, '長さ:', formData.croppedImage?.length || 0);
     console.log('  🔍 全キー:', Object.keys(formData));
+    console.log('  📦 全データ (文字列化):', JSON.stringify(formData).substring(0, 500) + '...');
+    
+    // 各ポケモンデータの型確認
+    console.log('  🔍 ポケモンデータ詳細検査:');
+    ['pokemon1', 'pokemon2', 'pokemon3'].forEach((key, index) => {
+      const pokemon = formData[key];
+      console.log(`    ${key}:`, {
+        exists: pokemon !== undefined,
+        type: typeof pokemon,
+        isNull: pokemon === null,
+        value: pokemon,
+        hasNormalMove: pokemon?.normalMove !== undefined,
+        normalMoveValue: pokemon?.normalMove
+      });
+    });
     
     // フォームデータをデータベース形式に変換
     console.log('📁 partyDataAdapterのインポートを試行中...');
