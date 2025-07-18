@@ -65,9 +65,20 @@ export const PvpPartyRegistrationWithApi: React.FC<PvpPartyRegistrationWithApiPr
     setValidationErrors([]);
     console.log('✅ バリデーション通過');
 
-    // データベース形式に変換
-    const dbInput = convertFormToDbInput(party);
-    console.log('🔄 変換後のデータ:', dbInput);
+    // フロントエンドからの生データをそのままサーバーに送信
+    // サーバー側でconvertFormToDbInputが実行される
+    console.log('📤 サーバーに送信するデータ:', {
+      title: party.title,
+      league: party.league,
+      hasPokemon1: !!party.pokemon1,
+      hasPokemon2: !!party.pokemon2,
+      hasPokemon3: !!party.pokemon3,
+      pokemon1Details: party.pokemon1,
+      pokemon2Details: party.pokemon2,
+      pokemon3Details: party.pokemon3,
+      hasImage: !!party.image,
+      hasCroppedImage: !!party.croppedImage
+    });
 
     // API呼び出し
     try {
@@ -76,12 +87,12 @@ export const PvpPartyRegistrationWithApi: React.FC<PvpPartyRegistrationWithApiPr
         console.log('🚀 executeSave内部開始');
         if (partyId) {
           console.log('📝 更新モード:', partyId);
-          // 更新
-          return await PartyApiClient.updateParty(partyId, dbInput);
+          // 更新時：フロントエンドデータをそのまま送信
+          return await PartyApiClient.updateParty(partyId, party as any);
         } else {
           console.log('✨ 新規作成モード');
-          // 新規作成
-          return await PartyApiClient.createParty(dbInput);
+          // 新規作成時：フロントエンドデータをそのまま送信
+          return await PartyApiClient.createParty(party as any);
         }
       });
 
